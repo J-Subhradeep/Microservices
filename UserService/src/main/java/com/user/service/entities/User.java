@@ -29,6 +29,6 @@ public class User {
 //	other user properties
 	
 	@Transient
-	private List<Rating> ratings = new ArrayList<>();
+	private Rating[] ratings;
 
 }
