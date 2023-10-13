@@ -1,0 +1,44 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    name: pg_database
+    username: postgres
+    password: admin
+    url: jdbc:postgresql://localhost:5432/microservices
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+  application:
+    name: USER-SERVICE
+  config:
+    import: configserver:http://localhost:8085
+    
+    
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+resilience4j:
+  circuitbreaker:
+    instances:
+      ratingBreaker:
+        register-health-indicator: true
+        event-consumer-buffer-size: 10
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 6
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED

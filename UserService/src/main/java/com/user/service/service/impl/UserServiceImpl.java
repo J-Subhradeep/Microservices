@@ -50,14 +50,14 @@ public class UserServiceImpl implements UserService {
 		
 		
 		//getting service url from service name
-		List<ServiceInstance> instances = this.discoveryClient.getInstances("RATING-SERVICE");
-	    ServiceInstance instance = instances.get(0);
-	    String url = instance.getUri().toString();
-	    System.out.println(url);
+//		List<ServiceInstance> instances = this.discoveryClient.getInstances("RATING-SERVICE");
+//	    ServiceInstance instance = instances.get(0);
+//	    String url = instance.getUri().toString();
+//	    System.out.println(url);
 	    
 	    
 	    // getting data
-		Rating[] ratings = restTemplate.getForObject(url+"/ratings/byUser/"+userId, Rating[].class);
+		Rating[] ratings = restTemplate.getForObject("http://RATING-SERVICE/ratings/byUser/"+userId, Rating[].class);
 		System.out.println(ratings);
 		user.setRatings(ratings);
 		return user;

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import com.netflix.discovery.DiscoveryClient;
 
 @SpringBootApplication
-@EnableDiscoveryClient
+@EnableEurekaClient
 public class UserServiceApplication {
 
 
