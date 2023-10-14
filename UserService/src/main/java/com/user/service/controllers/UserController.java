@@ -17,6 +17,8 @@ import com.user.service.entities.User;
 import com.user.service.service.UserService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 
 
 
@@ -34,12 +36,18 @@ public class UserController {
 	}
 	
 	@GetMapping("/{userId}")
-	@CircuitBreaker(name = "ratingBreaker",fallbackMethod = "ratingFallback")
+	//@CircuitBreaker(name = "ratingBreaker",fallbackMethod = "ratingFallback")
+	//@Retry(name="ratingBreaker",fallbackMethod = "ratingFallback")
+	@RateLimiter(name="userRateLimiter", fallbackMethod = "ratingFallback")
 	public ResponseEntity<User> getSintleUser(@PathVariable String userId){
+		System.out.println("Retry count: "+retryCount);
+		retryCount++;
 		User user = userService.getUser(userId);
+		
 		return ResponseEntity.ok(user);
 	}
 	
+	int retryCount = 1;
 	
 	@GetMapping("/")
 	
@@ -51,11 +59,12 @@ public class UserController {
 //	creating fall back method for circuit breaker
 	public ResponseEntity<User> ratingFallback(String userId,Exception ex){
 		System.out.println(ex.getMessage());
+
 		List<User> list = new ArrayList<>();
 		User u = new User();
 		u.setName("No User");
 		u.setEmail("No User");
 		list.add(u);
-		return new ResponseEntity<User> (u,HttpStatus.OK);
+		return new ResponseEntity<User> (u,HttpStatus.BAD_REQUEST);
 	}
 }

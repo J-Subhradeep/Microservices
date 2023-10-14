@@ -30,7 +30,20 @@ management:
     health:
       show-details: always
 resilience4j:
+  ratelimiter:
+    instances:
+      userRateLimiter:
+        limit-refresh-period: 5s
+        limit-for-period: 10
+        timeout-duration: 0
+  retry:
+    instances:
+      ratingBreaker:
+        max-attempts: 5
+        wait-duration: 5s
+        
   circuitbreaker:
+   
     instances:
       ratingBreaker:
         register-health-indicator: true
